@@ -21,10 +21,10 @@ with open('airdropAbi.json') as abi_json:
 #   print(len(accounts))
 
 # This will need to point to your geth node
-w3 = Web3(HTTPProvider('http://localhost:8545'))
+w3 = Web3(IPCProvider('/Users/andychorlian/Library/Ethereum/testnet/geth.ipc'))
 print(w3.eth.gasPrice)
 
-contract_address = '0xf8d49b15c4849eeb187e6edc2a7ca18d040d6974'
+contract_address = '0x71c2975350a095b62b4f568f98a4ff4fdd85e71e'
 airdropContract = w3.eth.contract(airdropABI, contract_address, ContractFactoryClass=ConciseContract)
 
 address_list = []
@@ -91,9 +91,8 @@ w3.personal.unlockAccount(w3.eth.accounts[0], '$Hedgeable4124$')
 
 with open("balances_final.json", 'r') as f:
     balance_list = f.read().split(',')
-print(len(balance_list))
 with open("address_final.json", 'r') as f:
-    address_list = f.read().split('\', \'')
+    address_list = f.read().rstrip().split('\', \'')
 
 balance_batch = []
 address_batch = []
@@ -106,11 +105,13 @@ for y in range(0, len(balance_list)):
         print("Sending tokens " + str(y))
         # print(address_batch)
         # print(balance_batch)
-        trxHash = airdropContract.setBalances(address_batch, balance_batch, transact={'from':w3.eth.accounts[0], 'gasPrice':3000000000, 'gasLimit':3000000})
+        # trxHash = airdropContract.setBalances(address_batch, balance_batch, transact={'from':w3.eth.accounts[0], 'gasPrice':3000000000, 'gasLimit':3000000})
         address_batch = []
         balance_batch = []
         w3.personal.unlockAccount(w3.eth.accounts[0], '$Hedgeable4124$')
-        time.sleep(8)
+        # time.sleep(8)
 
 # print(balSum)
+print(address_batch)
+print(balance_batch)
 trxHash = airdropContract.setBalances(address_batch, balance_batch, transact={'from':w3.eth.accounts[0], 'gasPrice':3000000000, 'gasLimit':3000000})
